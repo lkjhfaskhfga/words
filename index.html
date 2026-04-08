@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Word Practice</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="app">
+        <!-- Selection Screen -->
+        <div id="selection-screen" class="screen">
+            <h1 id="selection-title">Select a Book</h1>
+            
+            <!-- Settings Header (Hidden initially, shown after book selected) -->
+            <div id="settings-header" class="hidden">
+                <div class="settings-row">
+                    <div class="setting-item">
+                        <label>Direction:</label>
+                        <div class="radio-group">
+                            <label><input type="radio" name="direction" value="nl-en" checked> NL → EN</label>
+                            <label><input type="radio" name="direction" value="en-nl"> EN → NL</label>
+                        </div>
+                    </div>
+                    <div class="setting-item">
+                        <label>Mode:</label>
+                        <div class="radio-group">
+                            <label><input type="radio" name="mode" value="test" checked> Test</label>
+                            <label><input type="radio" name="mode" value="in-mind"> In-mind</label>
+                            <label><input type="radio" name="mode" value="multiple-choice"> MC</label>
+                        </div>
+                    </div>
+                    <button id="change-book-btn" class="secondary-btn">Change Book</button>
+                </div>
+            </div>
+
+            <div id="book-grid" class="grid-container"></div>
+            <div id="chapter-grid" class="grid-container hidden"></div>
+        </div>
+
+        <!-- List Screen -->
+        <div id="list-screen" class="screen hidden">
+            <div class="list-header">
+                <button id="back-to-chapters" class="secondary-btn">Back</button>
+                <h2 id="list-title">Chapter Name</h2>
+                <button id="start-practice-btn" class="primary-btn">Start Practice</button>
+            </div>
+            <div id="word-list-container">
+                <table class="word-table">
+                    <thead>
+                        <tr>
+                            <th>Dutch</th>
+                            <th>English</th>
+                        </tr>
+                    </thead>
+                    <tbody id="word-list-body"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Exercise Screen -->
+        <div id="exercise-screen" class="screen hidden">
+            <div class="exercise-header">
+                <button id="back-to-selection" class="secondary-btn">Back</button>
+                <div id="progress-text">Word 1 of 10</div>
+            </div>
+            
+            <div class="exercise-container">
+                <div id="question-container">
+                    <div id="question-label">Translate:</div>
+                    <div class="word-pronounce-row">
+                        <div id="question-word">Word</div>
+                        <button id="pronounce-btn" class="icon-btn" title="Pronounce">
+                            <svg viewBox="0 0 24 24" width="24" height="24">
+                                <path fill="currentColor" d="M14,3.23V5.29C16.89,6.15 19,8.83 19,12C19,15.17 16.89,17.85 14,18.71V20.77C18,19.86 21,16.28 21,12C21,7.72 18,4.14 14,3.23M16.5,12C16.5,10.23 15.5,8.71 14,7.97V16.03C15.5,15.29 16.5,13.77 16.5,12M3,9V15H7L12,20V4L7,9H3Z" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <div id="answer-input-container" class="mode-container hidden">
+                    <input type="text" id="answer-input" placeholder="Type your answer here..." autocomplete="off">
+                </div>
+
+                <div id="multiple-choice-container" class="mode-container hidden">
+                    <div id="mc-options" class="options-grid"></div>
+                </div>
+
+                <div id="in-mind-container" class="mode-container hidden">
+                    <button id="show-answer-btn" class="primary-btn">Show Answer</button>
+                    <div id="in-mind-result" class="hidden">
+                        <div id="revealed-answer"></div>
+                        <div class="in-mind-buttons">
+                            <button id="correct-btn" class="success-btn">I was correct</button>
+                            <button id="incorrect-btn" class="danger-btn">I was wrong</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="feedback-container" class="hidden">
+                    <div id="feedback-message"></div>
+                    <div id="correct-answer-display" class="hidden"></div>
+                    <div id="timer-bar-container">
+                        <div id="timer-bar"></div>
+                    </div>
+                    <div class="feedback-actions">
+                        <button id="override-correct-btn" class="secondary-btn hidden">I was actually correct</button>
+                        <button id="next-btn" class="primary-btn">Next Word</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Summary Screen -->
+        <div id="summary-screen" class="screen hidden">
+            <h1>Practice Completed!</h1>
+            <div class="summary-stats">
+                <p>Correct: <span id="summary-correct">0</span></p>
+                <p>Incorrect: <span id="summary-incorrect">0</span></p>
+            </div>
+            <h3>Most difficult words:</h3>
+            <ul id="difficult-words-list"></ul>
+            <button id="restart-btn" class="primary-btn">Back to Selection</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
