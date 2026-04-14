@@ -3,8 +3,8 @@ let manifest = null;
 let currentWords = [];
 let queue = [];
 let results = {
-    correct: 0,
-    incorrect: 0,
+    correct: 0, // Used for 'Correct first try'
+    incorrect: 0, // Total mistakes
     wrongCounts: {} // word -> count
 };
 let settings = {
@@ -104,6 +104,7 @@ async function init() {
 
 function populateBookGrid() {
     bookGrid.innerHTML = '';
+    if (!manifest) return;
     manifest.books.forEach(book => {
         const card = document.createElement('div');
         card.className = 'selectable-card';
@@ -336,7 +337,10 @@ function checkTypedAnswer() {
 
 function handleAnswer(isCorrect, element = null) {
     if (isCorrect) {
-        results.correct++;
+        if (currentItem.failCount === 0) {
+            results.correct++;
+        }
+        
         if (settings.mode === 'in-mind') {
             nextQuestion();
             return;
@@ -405,7 +409,9 @@ function overrideCorrect() {
     if (timerTimeout) clearTimeout(timerTimeout);
     
     // Correct results
-    results.correct++;
+    if (currentItem.failCount === 1) { // It was failing for the first time
+        results.correct++;
+    }
     results.incorrect--;
     results.wrongCounts[currentItem.dutch]--;
     if (results.wrongCounts[currentItem.dutch] <= 0) delete results.wrongCounts[currentItem.dutch];
@@ -424,25 +430,85 @@ function overrideCorrect() {
     startTimer();
 }
 
+function calculateWordScore(n) {
+    if (n === 0) return 1.0;
+    
+    // Diminishing penalties: 0.4, 0.2, 0.1, 0.05...
+    let totalPenalty = 0.4;
+    let currentPenalty = 0.2;
+    for (let i = 1; i < n; i++) {
+        totalPenalty += currentPenalty;
+        currentPenalty *= 0.5;
+    }
+    
+    return Math.max(0, 1.0 - totalPenalty);
+}
+
 function showSummary() {
     showScreen('summary');
+    
+    // Calculate Grade
+    let totalWeightedScore = 0;
+    currentWords.forEach(word => {
+        const mistakes = results.wrongCounts[word.dutch] || 0;
+        totalWeightedScore += calculateWordScore(mistakes);
+    });
+    
+    const grade = (totalWeightedScore / currentWords.length) * 10;
+    
+    document.getElementById('summary-grade').textContent = grade.toFixed(1);
     document.getElementById('summary-correct').textContent = results.correct;
+    document.getElementById('total-words-count').textContent = currentWords.length;
     document.getElementById('summary-incorrect').textContent = results.incorrect;
     
-    const difficultList = document.getElementById('difficult-words-list');
-    difficultList.innerHTML = '';
+    const difficultTable = document.getElementById('difficult-words-table');
+    const difficultBody = document.getElementById('difficult-words-body');
+    const lang1Header = document.getElementById('summary-lang-1');
+    const lang2Header = document.getElementById('summary-lang-2');
+    
+    if (settings.direction === 'nl-en') {
+        lang1Header.textContent = 'Dutch';
+        lang2Header.textContent = 'English';
+    } else {
+        lang1Header.textContent = 'English';
+        lang2Header.textContent = 'Dutch';
+    }
+
+    difficultBody.innerHTML = '';
     
     const sortedWrong = Object.entries(results.wrongCounts)
-        .sort((a, b) => b[1] - a[1])
-        .slice(0, 5);
+        .sort((a, b) => b[1] - a[1]);
         
     if (sortedWrong.length === 0) {
-        difficultList.innerHTML = '<li>None! Great job!</li>';
+        difficultTable.classList.add('hidden');
+        const container = document.getElementById('difficult-words-container');
+        if (!document.getElementById('no-mistakes-msg')) {
+            const msg = document.createElement('p');
+            msg.id = 'no-mistakes-msg';
+            msg.textContent = 'None! Great job!';
+            msg.style.textAlign = 'center';
+            msg.style.margin = '20px 0';
+            container.appendChild(msg);
+        }
     } else {
-        sortedWrong.forEach(([word, count]) => {
-            const li = document.createElement('li');
-            li.textContent = `${word}: ${count} mistakes`;
-            difficultList.appendChild(li);
+        difficultTable.classList.remove('hidden');
+        const msg = document.getElementById('no-mistakes-msg');
+        if (msg) msg.remove();
+        
+        sortedWrong.forEach(([dutchWord, count]) => {
+            const wordObj = currentWords.find(w => w.dutch === dutchWord);
+            if (wordObj) {
+                const lang1Word = settings.direction === 'nl-en' ? wordObj.dutch : wordObj.english;
+                const lang2Word = settings.direction === 'nl-en' ? wordObj.english : wordObj.dutch;
+                
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td style="text-align: center; font-weight: bold; color: var(--danger-color);">${count}</td>
+                    <td>${lang1Word}</td>
+                    <td>${lang2Word}</td>
+                `;
+                difficultBody.appendChild(tr);
+            }
         });
     }
 }

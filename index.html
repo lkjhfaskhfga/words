@@ -114,12 +114,27 @@
         <!-- Summary Screen -->
         <div id="summary-screen" class="screen hidden">
             <h1>Practice Completed!</h1>
+            <div id="grade-container">
+                <div class="grade-label">Your Grade:</div>
+                <div id="summary-grade">0.0</div>
+            </div>
             <div class="summary-stats">
-                <p>Correct: <span id="summary-correct">0</span></p>
-                <p>Incorrect: <span id="summary-incorrect">0</span></p>
+                <p>Correct first try: <span id="summary-correct">0</span> / <span id="total-words-count">0</span></p>
+                <p>Total mistakes: <span id="summary-incorrect">0</span></p>
             </div>
             <h3>Most difficult words:</h3>
-            <ul id="difficult-words-list"></ul>
+            <div id="difficult-words-container">
+                <table class="word-table" id="difficult-words-table">
+                    <thead>
+                        <tr>
+                            <th>Mistakes</th>
+                            <th id="summary-lang-1">Dutch</th>
+                            <th id="summary-lang-2">English</th>
+                        </tr>
+                    </thead>
+                    <tbody id="difficult-words-body"></tbody>
+                </table>
+            </div>
             <button id="restart-btn" class="primary-btn">Back to Selection</button>
         </div>
     </div>

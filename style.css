@@ -342,7 +342,28 @@ button {
 /* Summary */
 .summary-stats {
     margin: 20px 0;
-    font-size: 20px;
+    font-size: 18px;
+}
+
+#grade-container {
+    margin: 30px 0;
+    padding: 20px;
+    background-color: #f8fbff;
+    border-radius: var(--border-radius);
+    border: 2px solid var(--primary-color);
+}
+
+.grade-label {
+    font-size: 14px;
+    text-transform: uppercase;
+    color: var(--secondary-color);
+    margin-bottom: 5px;
+}
+
+#summary-grade {
+    font-size: 48px;
+    font-weight: bold;
+    color: var(--primary-color);
 }
 
 #difficult-words-list {
