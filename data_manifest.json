@@ -166,6 +166,24 @@
         "8.9 Werken en leren",
         "8.10 Blijf jezelf ontwikkelen"
       ]
+    },
+    {
+      "id": "a2_irregular",
+      "name": "A2 Irregular",
+      "chapters": [
+        "9.1 Verleden tijd",
+        "9.2 Verleden tijd",
+        "9.3 Verleden tijd",
+        "9.4 Verleden tijd",
+        "9.5 Verleden tijd",
+        "9.6 Verleden tijd",
+        "10.1 Voltooide tijd",
+        "10.2 Voltooide tijd",
+        "10.3 Voltooide tijd",
+        "10.4 Voltooide tijd",
+        "10.5 Voltooide tijd",
+        "10.6 Voltooide tijd"
+      ]
     }
   ]
 }
